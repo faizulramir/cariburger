@@ -8,7 +8,7 @@
         <div class="card" style="margin-bottom: 100px;">
             <div class="card-body">
                 <h5 class="card-title"><b>Add Shop</b></h5>
-                <form action="#" method="POST">
+                <form action="{{ route('create.post') }}" method="POST">
                     @csrf
                     <div class="row" style="margin-bottom: 10px;">
                         <div class="col-12">
@@ -55,7 +55,7 @@
                     <div class="row" style="margin-bottom: 10px;">
                         <div class="col-12">
                             <label>Creator Name</label>
-                            <input type="text" name="waze_url" class="form-control" placeholder="Abe John">
+                            <input type="text" name="creator_name" class="form-control" placeholder="Abe John">
                         </div>
                     </div>
                     <div class="row">
@@ -68,7 +68,7 @@
         </div>
     </div>
 
-    <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal fade" id="create" tabindex="-1" role="dialog" aria-labelledby="createTitle" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -82,9 +82,6 @@
                         <li>Tap on "Copy Link"</li>
                     </ul>
                 </div>
-                {{-- <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                </div> --}}
             </div>
         </div>
     </div>
@@ -93,7 +90,7 @@
 @section('script')
     <script>
         function openModal() {
-            $('#exampleModalCenter').modal('show');
+            $('#create').modal('show');
         }
     </script>
 @endsection

@@ -13,11 +13,9 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-})->name('home');
+Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::get('/getStalls/{data}/{type}', [App\Http\Controllers\HomeController::class, 'getStalls'])->name('home.getstall');
 
-Route::get('/create', function () {
-    return view('data.create');
-})->name('create');
+Route::get('/create', [App\Http\Controllers\DataController::class, 'index'])->name('create.index');
+Route::post('/create/post', [App\Http\Controllers\DataController::class, 'create'])->name('create.post');
 
