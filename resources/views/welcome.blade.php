@@ -2,7 +2,7 @@
 
 @section('content')
     <div class="container">
-        <div class="row" style="background: rgba(255,255,255,0.7);" style="">
+        <div class="row" style="background: rgba(255,255,255,0.7); padding-top:10px;" >
             <h1 style="text-align: center; font-weight: bold">Cari Burger</h1>
         </div>
 

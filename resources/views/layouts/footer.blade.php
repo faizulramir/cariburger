@@ -4,7 +4,7 @@
             <div class="row">
                 <div class="col-12">
                     <form class="form-inline">
-                        <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+                        <input class="form-control mr-sm-2" type="search" placeholder="Search State/District/Stall Name" aria-label="Search Location/Stall Name">
                     </form>
                 </div>
             </div>

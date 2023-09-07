@@ -2,7 +2,7 @@
 
 @section('content')
     <div class="container">
-        <div class="row" style="background: rgba(255,255,255,0.7);" style="">
+        <div class="row" style="background: rgba(255,255,255,0.7); padding-top:10px;">
             <h1 style="text-align: center; font-weight: bold">Cari Burger</h1>
         </div>
         <div class="card" style="margin-bottom: 100px;">
@@ -12,7 +12,7 @@
                     @csrf
                     <div class="row" style="margin-bottom: 10px;">
                         <div class="col-12">
-                            <label>Shop Name <span style="color: red;">*</span></label>
+                            <label>Stall Name <span style="color: red;">*</span></label>
                             <input type="text" name="name" class="form-control" placeholder="Kedai Burger Abe John" required>
                         </div>
                     </div>
