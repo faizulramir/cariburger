@@ -11,11 +11,11 @@ class DataController extends Controller
 {
     public function index () 
     {
-        Cache::flush();
+        // Cache::flush();
 
-        Cache::rememberForever('stalls', function () {
-            return DB::table('stalls')->get();
-        });
+        // Cache::rememberForever('stalls', function () {
+        //     return DB::table('stalls')->get();
+        // });
 
         return view('data.create');
     }

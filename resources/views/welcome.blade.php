@@ -2,7 +2,7 @@
 
 @section('content')
     <div class="container">
-        <div class="row" style="background: rgba(255,255,255,0.7); padding-top:10px;" >
+        <div class="row" style="background: rgba(255,255,255,0.7); padding-top:10px; background-image:url({{asset('img/glitter.gif')}})" >
             <h1 style="text-align: center; font-weight: bold">Cari Burger</h1>
         </div>
 
@@ -11,10 +11,15 @@
                 {{-- Data kat sini --}}
             </div>
         </div>
+
+        @include('modals.editStall')
+        @include('modals.openWaze')
     </div>
 @endsection
 
 @section('script')
+    @include('scripts.getEditModal')
+    @include('scripts.openWazeModal')
     <script>
         function getData(data) {
             $.ajax({
@@ -47,10 +52,18 @@
                                     <div class="row">
                                         <div class="card-title"><b>${arr_data[index].name} @ ${arr_data[index].district}</b></div>
                                         <div class="col-8">
-                                            <span>${arr_data[index].landmark} <br> ${arr_data[index].operation_day} <br> ${arr_data[index].operation_time}</span>
+                                            <span>${arr_data[index].landmark ? arr_data[index].landmark : '-'} <br> ${arr_data[index].operation_day ? arr_data[index].operation_day : '-'} <br> ${arr_data[index].operation_time ? arr_data[index].operation_time : '-'}</span>
                                         </div>
                                         <div class="col-4" style="text-align: center;">
                                             ${if_waze}
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <span style="font-size: 10px; color: blue;" onclick="editStall('${arr_data[index].id}')">Edit Stall</span>
+                                        </div>
+                                        <div class="col-6" style="text-align: right;">
+                                            <span style="font-size: 8px; color: grey;">Created by ${arr_data[index].creator_name ? arr_data[index].creator_name : 'Anonymous'}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -59,17 +72,17 @@
                         }
                     } else {
                         const wrapper = document.getElementById("wrapper");
-                            const box = document.createElement('div');
-                            box.classList.add('card');
-                            box.innerHTML = `
-                                <div class="card-body">
-                                    <div class="row">
-                                        <div class="card-title"><b>Location not found/have no entries!</b></div>
-                                        <p>Kindly search your desired places!</p>
-                                    </div>
+                        const box = document.createElement('div');
+                        box.classList.add('card');
+                        box.innerHTML = `
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="card-title"><b>Location not found/have no entries!</b></div>
+                                    <p>Kindly search your desired places!</p>
                                 </div>
-                            `;
-                            wrapper.appendChild(box);
+                            </div>
+                        `;
+                        wrapper.appendChild(box);
                     }
                 }
             });

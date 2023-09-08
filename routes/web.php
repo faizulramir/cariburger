@@ -14,7 +14,9 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-Route::get('/getStalls/{data}/{type}', [App\Http\Controllers\HomeController::class, 'getStalls'])->name('home.getstall');
+Route::get('/getStalls/{data}/{type}', [App\Http\Controllers\HomeController::class, 'getStalls'])->name('home.getstalls');
+Route::get('/getStall/{id}', [App\Http\Controllers\HomeController::class, 'getStall'])->name('home.getstall');
+Route::post('/editStall', [App\Http\Controllers\HomeController::class, 'editStall'])->name('home.editStall');
 
 Route::get('/create', [App\Http\Controllers\DataController::class, 'index'])->name('create.index');
 Route::post('/create/post', [App\Http\Controllers\DataController::class, 'create'])->name('create.post');
