@@ -25,6 +25,14 @@
             <!-- End Page-content -->
         </div>
     </body>
+    <script>
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+    </script>
+    
     @include('layouts.footer')
     @yield('script')
 </html>

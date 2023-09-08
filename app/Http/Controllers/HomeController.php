@@ -19,7 +19,7 @@ class HomeController extends Controller
         $stalls = Cache::get('stalls');
         $new  = [];
 
-        if ($data !== 'secret' && $data !== '')  {
+        if ($data !== 'secret' && $data !== '' && $stalls)  {
             foreach ($stalls->toArray() as $key => $stall) {
                 if (false !== stristr(strtolower($stall->{$type}), strtolower($data)))  {
                     array_push($new, $stall);
@@ -39,9 +39,11 @@ class HomeController extends Controller
         $stalls = Cache::get('stalls');
         $new = [];
 
-        foreach ($stalls->toArray() as $key => $stall) {
-            if ($stall->id == $id) {
-                array_push($new, $stall);
+        if ($stalls) {
+            foreach ($stalls->toArray() as $key => $stall) {
+                if ($stall->id == $id) {
+                    array_push($new, $stall);
+                }
             }
         }
 
