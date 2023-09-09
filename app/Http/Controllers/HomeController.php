@@ -64,6 +64,8 @@ class HomeController extends Controller
             return DB::table('stalls')->get();
         });
 
-        return redirect()->back()->with('success', 'Success!');
+        return response()->json([
+            'success' => true
+        ], 200);
     } 
 }

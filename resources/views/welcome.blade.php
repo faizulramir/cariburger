@@ -27,11 +27,11 @@
                 url:'/getStalls/' + data  + '/district',
                 success:function(data) {
                     let arr_data = data.data;
-                    console.log(arr_data)
+                    const wrapper = document.getElementById("wrapper");
+                    wrapper.innerHTML = '';
                     if (data.location) {
                         for (let index = 0; index < arr_data.length; index++) {
                             let m_bot = index == (arr_data.length - 1)  ? '150' : '10';
-                            const wrapper = document.getElementById("wrapper");
                             const box = document.createElement('div');
                             box.classList.add('card');
                             box.style.marginBottom = `${m_bot}px`;
@@ -72,6 +72,7 @@
                         }
                     } else {
                         const wrapper = document.getElementById("wrapper");
+                        wrapper.innerHTML = '';
                         const box = document.createElement('div');
                         box.classList.add('card');
                         box.innerHTML = `
