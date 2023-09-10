@@ -80,9 +80,10 @@
             for (const input of inputs){
                 data.append(input.name, input.value)
             }
+            var url = '{{ route("create.post") }}';
             $.ajax({
                 type:'post',
-                url:'/cariburger/create/post',
+                url: url,
                 data: data,
                 cache       : false,
                 contentType : false,
