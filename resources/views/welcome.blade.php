@@ -5,7 +5,7 @@
         <div class="row" style="background: rgba(255,255,255,0.7); padding-top:10px; background-image:url({{asset('img/glitter.gif')}})" >
             <h1 style="text-align: center; font-weight: bold">Cari Burger</h1>
         </div>
-
+        <p id="demo"></p>
         <div class="row">
             <div class="col-12" id="wrapper">
                 {{-- Data kat sini --}}
@@ -14,6 +14,7 @@
 
         @include('modals.editStall')
         @include('modals.openWaze')
+        @include('modals.spinner')
     </div>
 @endsection
 
@@ -22,9 +23,12 @@
     @include('scripts.openWazeModal')
     <script>
         function getData(data) {
+            var url = '{{ route("home.getstalls", [":slug", ":slug2"]) }}';
+            url = url.replace(':slug', data);
+            url = url.replace(':slug2', 'district');
             $.ajax({
                 type:'get',
-                url:'/getStalls/' + data  + '/district',
+                url: url,
                 success:function(data) {
                     let arr_data = data.data;
                     const wrapper = document.getElementById("wrapper");
@@ -85,6 +89,7 @@
                         `;
                         wrapper.appendChild(box);
                     }
+                    $('#spinner').modal('hide');
                 }
             });
         }
@@ -92,18 +97,23 @@
         const successCallback = (position) => {
             $.ajax({
                 type:'get',
-                url:'https://geocode.maps.co/reverse?lat='+ position.coords.latitude +'&lon='+ position.coords.longitude,
+                url:`https://nominatim.openstreetmap.org/reverse?format=json&lat=${position.coords.latitude}&lon=${position.coords.longitude}&zoom=18&addressdetails=1`,
                 success:function(data) {
-                    getData(data.address.suburb)
+                    getData(data.address.suburb ? data.address.suburb : data.address.city )
                 }
             });
         };
 
         const errorCallback = (error) => {
-           getData('secret');
+            getData('secret');
         };
-
-        navigator.geolocation.getCurrentPosition(successCallback, errorCallback);
+        
+        $( document ).ready(function() {
+            $('#spinner').modal({backdrop: 'static', keyboard: false})  
+            $('#spinner').modal('show');
+            navigator.geolocation.getCurrentPosition(successCallback, errorCallback);
+        });
+        
 
     </script>
 @endsection

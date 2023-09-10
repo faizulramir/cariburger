@@ -22,7 +22,7 @@
                     </div>
                     <div class="row" style="margin-bottom: 10px;">
                         <div class="col-12">
-                            <label>District <span style="color: red;">*</span></label>
+                            <label>City <span style="color: red;">*</span></label>
                             <input type="text" name="district" id="district" class="form-control" maxlength="50" placeholder="Shah Alam" required>
                         </div>
                     </div>
@@ -69,9 +69,11 @@
         for (const input of inputs){
             data.append(input.name, input.value)
         }
+        var url = '{{ route("home.editStall") }}';
+        
         $.ajax({
             type:'post',
-            url:'/editStall',
+            url: url,
             data: data,
             cache       : false,
             contentType : false,

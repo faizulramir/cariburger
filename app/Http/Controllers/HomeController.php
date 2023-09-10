@@ -26,6 +26,10 @@ class HomeController extends Controller
                 }
             }
         }
+        
+        usort($new, function($a, $b) {
+            return $a->name <=> $b->name;
+        });
 
         return response()->json([
             'data' => $new,

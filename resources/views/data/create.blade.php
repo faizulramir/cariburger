@@ -24,7 +24,7 @@
                     </div>
                     <div class="row" style="margin-bottom: 10px;">
                         <div class="col-12">
-                            <label>District <span style="color: red;">*</span></label>
+                            <label>City <span style="color: red;">*</span></label>
                             <input type="text" name="district" id="district" class="form-control" maxlength="50" placeholder="Shah Alam" required>
                         </div>
                     </div>
@@ -82,7 +82,7 @@
             }
             $.ajax({
                 type:'post',
-                url:'/create/post',
+                url:'/cariburger/create/post',
                 data: data,
                 cache       : false,
                 contentType : false,

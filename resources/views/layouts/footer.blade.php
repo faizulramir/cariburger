@@ -9,7 +9,7 @@
                     Filter
                 </div>
                 <div class="col-8">
-                    <input class="form-control mr-sm-2" name="search" id="search" type="search" placeholder="District">
+                    <input class="form-control mr-sm-2" name="search" id="search" type="search" placeholder="City">
                 </div>
                 <div class="col-2" style="text-align: left;" onclick="getStalls()">
                     <i>
@@ -60,7 +60,7 @@
                     <div class="col-4">
                         <div class="form-check">
                             <input class="form-check-input" type="radio" name="filter_radio" id="district" value="district" checked>
-                            <label class="form-check-label" for="district">District</label>
+                            <label class="form-check-label" for="district">City</label>
                         </div>
                     </div>
                     <div class="col-4">
@@ -92,7 +92,7 @@
     
     $(".form-check-input").on("change", function() {
         let placeholder = $('.form-check-input:checked').val();
-
+        if (placeholder == 'district') placeholder = 'city';
         const arr = placeholder.split(" ");
         for (var i = 0; i < arr.length; i++) {
             arr[i] = arr[i].charAt(0).toUpperCase() + arr[i].slice(1);
@@ -103,6 +103,8 @@
     });
 
     function getStalls() {
+        $('#spinner').modal({backdrop: 'static', keyboard: false})  
+        $('#spinner').modal('show');
         const search = document.getElementById("search");
         const wrapper = document.getElementById("wrapper");
         wrapper.innerHTML = '';
@@ -120,10 +122,14 @@
                 </div>
             `;
             wrapper.appendChild(box);
+            $('#spinner').modal('hide');
         } else {
+            var url = '{{ route("home.getstalls", [":slug", ":slug2"]) }}';
+            url = url.replace(':slug', search.value);
+            url = url.replace(':slug2', dataType);
             $.ajax({
                 type:'get',
-                url:'/getStalls/' + search.value + '/' + dataType,
+                url: url,
                 success:function(data) {
                     let arr_data = data.data;
                     if (data.data.length > 0) {
@@ -180,6 +186,7 @@
                         `;
                         wrapper.appendChild(box);
                     }
+                    $('#spinner').modal('hide');
                 }
             });
         }
