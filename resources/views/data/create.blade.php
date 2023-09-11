@@ -13,7 +13,7 @@
                     <div class="row" style="margin-bottom: 10px;">
                         <div class="col-12">
                             <label>Stall Name <span style="color: red;">*</span></label>
-                            <input type="text" name="name" id="name" class="form-control" maxlength="50" placeholder="Kedai Burger Abe John" required>
+                            <input type="text" name="name" id="name" class="form-control" maxlength="50" placeholder="Kedai Burger Abe John" value="{{old('name')}}" required>
                         </div>
                     </div>
                     <div class="row" style="margin-bottom: 10px;">
@@ -25,7 +25,7 @@
                     <div class="row" style="margin-bottom: 10px;">
                         <div class="col-12">
                             <label>City <span style="color: red;">*</span></label>
-                            <input type="text" name="district" id="district" class="form-control" maxlength="50" placeholder="Shah Alam" required>
+                            <input type="text" name="city" id="city" class="form-control" maxlength="50" placeholder="Shah Alam" required>
                         </div>
                     </div>
                     <div class="row" style="margin-bottom: 10px;">
@@ -48,16 +48,18 @@
                     </div>
                     <div class="row" style="margin-bottom: 10px;">
                         <div class="col-12">
-                            <label>Waze URL <a href="javascript:void(0);" onclick="openModal()">(?)</a></label>
-                            <input type="text" name="waze_url" id="waze_url" maxlength="50" class="form-control" placeholder="https://waze.com/ul/hw281wb131">
+                            <label>Waze URL <a href="{{ route('map.index', ['from' => url()->current()]) }}">Get URL Here</a></label>
+                            <input type="text" name="waze_url" id="waze_url" class="form-control" placeholder="Click on 'Get URL Here'" readonly>
                         </div>
                     </div>
                     <div class="row" style="margin-bottom: 10px;">
                         <div class="col-12">
                             <label>Creator Name</label>
-                            <input type="text" name="creator_name" class="form-control" placeholder="Abe John">
+                            <input type="text" name="creator_name" id="creator_name" class="form-control" placeholder="Abe John">
                         </div>
                     </div>
+                    <input type="hidden" name="lat" id="lat">
+                    <input type="hidden" name="lng" id="lng">
                     <div class="row">
                         <div class="col-12" style="text-align: center;">
                             <button type="button" class="btn btn-success" onclick="submitCreate()">Submit</button>
@@ -74,6 +76,43 @@
     @include('scripts.openWazeModal')
     
     <script>
+        init_values();
+        
+        function save_data_to_localstorage(input_id) {
+            const input_val = document.getElementById(input_id).value;
+            localStorage.setItem(input_id, input_val);
+        }
+
+        $('input:text').keyup(function(){
+            save_data_to_localstorage($(this).attr('id'))
+        });
+
+        function init_values() {
+            const queryString = window.location.search;
+            const urlParams = new URLSearchParams(queryString);
+            if (urlParams.size > 0)  {
+                let params = urlParams.get('latlng').split(",")
+                if (params[0] == '0') {
+                    $('#lat').val('')
+                    $('#lng').val('')
+                    $('#waze_url').val('')
+                } else {
+                    let waze_url = `https://waze.com/ul?ll=${params[0]},${params[1]}&z=10`
+                    $('#waze_url').val(waze_url)
+                    $('#lat').val(params[0])
+                    $('#lng').val(params[1])
+                }
+            }
+            
+            var inputs = document.getElementById('createStallForm').getElementsByTagName('input');
+
+            for (const input of inputs){
+                if (localStorage[$(input).attr('id')]) {
+                    $(input).val(localStorage[$(input).attr('id')]);
+                }
+            }
+        }
+
         function submitCreate() {
             var inputs = document.getElementById('createStallForm').getElementsByTagName('input');
             var data = new FormData();
@@ -81,6 +120,9 @@
                 data.append(input.name, input.value)
             }
             var url = '{{ route("create.post") }}';
+
+            if ($('#name').val() == '' || $('#state').val() == '' || $('#city').val() == '') return;
+            
             $.ajax({
                 type:'post',
                 url: url,
@@ -90,6 +132,7 @@
                 processData : false,
                 success:function(data) {
                     $('#createStallForm').find("input[type=text]").val("");
+                    localStorage.clear();
                     alert('Success!');
                 }
             });

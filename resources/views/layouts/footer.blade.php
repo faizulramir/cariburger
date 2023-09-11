@@ -59,8 +59,8 @@
                 <div class="row">
                     <div class="col-4">
                         <div class="form-check">
-                            <input class="form-check-input" type="radio" name="filter_radio" id="district" value="district" checked>
-                            <label class="form-check-label" for="district">City</label>
+                            <input class="form-check-input" type="radio" name="filter_radio" id="city" value="city" checked>
+                            <label class="form-check-label" for="city">City</label>
                         </div>
                     </div>
                     <div class="col-4">
@@ -92,7 +92,7 @@
     
     $(".form-check-input").on("change", function() {
         let placeholder = $('.form-check-input:checked').val();
-        if (placeholder == 'district') placeholder = 'city';
+
         const arr = placeholder.split(" ");
         for (var i = 0; i < arr.length; i++) {
             arr[i] = arr[i].charAt(0).toUpperCase() + arr[i].slice(1);
@@ -153,7 +153,7 @@
                             box.innerHTML = `
                                 <div class="card-body">
                                     <div class="row">
-                                        <div class="card-title"><b>${arr_data[index].name} @ ${arr_data[index].district}</b></div>
+                                        <div class="card-title"><b>${arr_data[index].name} @ ${arr_data[index].city}</b></div>
                                         <div class="col-8">
                                             <span>${arr_data[index].landmark ? arr_data[index].landmark : '-'} <br> ${arr_data[index].operation_day ? arr_data[index].operation_day : '-'} <br> ${arr_data[index].operation_time ? arr_data[index].operation_time : '-'}</span>
                                         </div>

@@ -23,7 +23,7 @@
                     <div class="row" style="margin-bottom: 10px;">
                         <div class="col-12">
                             <label>City <span style="color: red;">*</span></label>
-                            <input type="text" name="district" id="district" class="form-control" maxlength="50" placeholder="Shah Alam" required>
+                            <input type="text" name="city" id="city" class="form-control" maxlength="50" placeholder="Shah Alam" required>
                         </div>
                     </div>
                     <div class="row" style="margin-bottom: 10px;">
@@ -46,10 +46,12 @@
                     </div>
                     <div class="row" style="margin-bottom: 10px;">
                         <div class="col-12">
-                            <label>Waze URL <a href="javascript:void(0);" maxlength="50" onclick="openModal()">(?)</a></label>
-                            <input type="text" name="waze_url" id="waze_url" class="form-control" placeholder="https://waze.com/ul/hw281wb131">
+                            <label>Waze URL <a href="" id="getUri">Get URL Here</a></label>
+                            <input type="text" name="waze_url" id="waze_url" class="form-control" placeholder="Click on 'Get URL Here'" readonly>
                         </div>
                     </div>
+                    <input type="hidden" name="lat" id="lat">
+                    <input type="hidden" name="lng" id="lng">
                     <div class="row">
                         <div class="col-12" style="text-align: center;">
                             <button type="button" class="btn btn-success"  onclick="submitEdit()">Submit</button>
@@ -62,10 +64,32 @@
 </div>
 
 <script>
+
+    init_values();
+
+    function save_data_to_localstorage(input_id) {
+        const input_val = document.getElementById(input_id).value;
+        localStorage.setItem(input_id, input_val);
+    }
+
+    $('input:text').keyup(function(){
+        save_data_to_localstorage($(this).attr('id'))
+    });
+
+    function init_values() {
+        var inputs = document.getElementById('editStallForm').getElementsByTagName('input');
+
+        for (const input of inputs){
+            if (localStorage[$(input).attr('id')]) {
+                $(input).val(localStorage[$(input).attr('id')]);
+            }
+        }
+    }
+    
     function submitEdit() {
         var inputs = document.getElementById('editStallForm').getElementsByTagName('input');
         var data = new FormData();
-        var district = $('#district').val();
+        var city = $('#city').val();
         for (const input of inputs){
             data.append(input.name, input.value)
         }
@@ -81,7 +105,7 @@
             success:function(data) {
                 $('#modalEditStall').modal('hide');
                 alert('Success!');
-                getData(district)
+                window.location.href = '{{url()->current()}}' + '/?city=' + city;
             }
         });
     }

@@ -25,7 +25,7 @@
         function getData(data) {
             var url = '{{ route("home.getstalls", [":slug", ":slug2"]) }}';
             url = url.replace(':slug', data);
-            url = url.replace(':slug2', 'district');
+            url = url.replace(':slug2', 'city');
             $.ajax({
                 type:'get',
                 url: url,
@@ -54,7 +54,7 @@
                             box.innerHTML = `
                                 <div class="card-body">
                                     <div class="row">
-                                        <div class="card-title"><b>${arr_data[index].name} @ ${arr_data[index].district}</b></div>
+                                        <div class="card-title"><b>${arr_data[index].name} @ ${arr_data[index].city}</b></div>
                                         <div class="col-8">
                                             <span>${arr_data[index].landmark ? arr_data[index].landmark : '-'} <br> ${arr_data[index].operation_day ? arr_data[index].operation_day : '-'} <br> ${arr_data[index].operation_time ? arr_data[index].operation_time : '-'}</span>
                                         </div>
@@ -89,7 +89,13 @@
                         `;
                         wrapper.appendChild(box);
                     }
+
+                    let modalid = '{{request()->get('modalid')}}';
+                    if (modalid)  {
+                        editStall(modalid)
+                    }
                     $('#spinner').modal('hide');
+
                 }
             });
         }
@@ -99,7 +105,12 @@
                 type:'get',
                 url:`https://nominatim.openstreetmap.org/reverse?format=json&lat=${position.coords.latitude}&lon=${position.coords.longitude}&zoom=18&addressdetails=1`,
                 success:function(data) {
-                    getData(data.address.suburb ? data.address.suburb : data.address.city )
+                    let city = '{{request()->get('city')}}';
+                    if (city)  {
+                        getData(city)
+                    } else {
+                        getData(data.address.suburb ? data.address.suburb : data.address.city )
+                    }
                 }
             });
         };
