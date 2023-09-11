@@ -64,28 +64,6 @@
 </div>
 
 <script>
-
-    init_values();
-
-    function save_data_to_localstorage(input_id) {
-        const input_val = document.getElementById(input_id).value;
-        localStorage.setItem(input_id, input_val);
-    }
-
-    $('input:text').keyup(function(){
-        save_data_to_localstorage($(this).attr('id'))
-    });
-
-    function init_values() {
-        var inputs = document.getElementById('editStallForm').getElementsByTagName('input');
-
-        for (const input of inputs){
-            if (localStorage[$(input).attr('id')]) {
-                $(input).val(localStorage[$(input).attr('id')]);
-            }
-        }
-    }
-    
     function submitEdit() {
         var inputs = document.getElementById('editStallForm').getElementsByTagName('input');
         var data = new FormData();

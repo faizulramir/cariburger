@@ -73,8 +73,6 @@
 @endsection
 
 @section('script')
-    @include('scripts.openWazeModal')
-    
     <script>
         init_values();
         
@@ -86,12 +84,27 @@
         $('input:text').keyup(function(){
             save_data_to_localstorage($(this).attr('id'))
         });
+        
+        var getUrlParameter = function getUrlParameter(sParam) {
+            var sPageURL = window.location.search.substring(1),
+                sURLVariables = sPageURL.split('&'),
+                sParameterName,
+                i;
+        
+            for (i = 0; i < sURLVariables.length; i++) {
+                sParameterName = sURLVariables[i].split('=');
+        
+                if (sParameterName[0] === sParam) {
+                    return sParameterName[1] === undefined ? true : decodeURIComponent(sParameterName[1]);
+                }
+            }
+            return false;
+        };
 
         function init_values() {
-            const queryString = window.location.search;
-            const urlParams = new URLSearchParams(queryString);
-            if (urlParams.size > 0)  {
-                let params = urlParams.get('latlng').split(",")
+            const urlParams = getUrlParameter('latlng');
+            if (urlParams)  {
+                let params = urlParams.split(",")
                 if (params[0] == '0') {
                     $('#lat').val('')
                     $('#lng').val('')
@@ -138,4 +151,7 @@
             });
         }
     </script>
+    @include('scripts.openWazeModal')
+    
+    
 @endsection

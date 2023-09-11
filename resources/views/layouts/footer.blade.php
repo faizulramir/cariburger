@@ -1,53 +1,66 @@
-<footer class="footer fixed-bottom mt-auto py-3" style="background: rgba(255,255,255,1);">
-    <div class="container">
-        @if (Route::currentRouteName() == 'home')
-            <div class="row align-items-center">
-                <div class="col-2" style="text-align: center;" onclick="openFilter()">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-three-dots" viewBox="0 0 16 16">
-                        <path d="M3 9.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z"/>
-                    </svg>
-                    Filter
-                </div>
-                <div class="col-8">
-                    <input class="form-control mr-sm-2" name="search" id="search" type="search" placeholder="City">
-                </div>
-                <div class="col-2" style="text-align: left;" onclick="getStalls()">
-                    <i>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="green" class="bi bi-search" viewBox="0 0 16 16">
-                            <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
-                        </svg>                        
-                    </i>
-                    Find
-                </div>
-            </div>
-            <hr style="border-top: dotted 1px;">
-        @endif
-        
-        <div class="row" style="text-align: center;">
-            <div class="col-6" style="border-right: 1px dotted black">
-                <a href="{{ route('home') }}" style="text-decoration:none; color: black;">
-                    <i>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="green" class="bi bi-house" viewBox="0 0 16 16">
-                            <path d="M8.707 1.5a1 1 0 0 0-1.414 0L.646 8.146a.5.5 0 0 0 .708.708L2 8.207V13.5A1.5 1.5 0 0 0 3.5 15h9a1.5 1.5 0 0 0 1.5-1.5V8.207l.646.647a.5.5 0 0 0 .708-.708L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293L8.707 1.5ZM13 7.207V13.5a.5.5 0 0 1-.5.5h-9a.5.5 0 0 1-.5-.5V7.207l5-5 5 5Z"/>
+@if(!request()->get('from'))
+    <footer class="footer fixed-bottom mt-auto py-3" style="background: rgba(255,255,255,1);">
+        <div class="container">
+            @if (Route::currentRouteName() == 'home')
+                <div class="row align-items-center">
+                    <div class="col-2" style="text-align: center;" onclick="openFilter()">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-three-dots" viewBox="0 0 16 16">
+                            <path d="M3 9.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z"/>
                         </svg>
-                    </i>
-                    <b>Home</b>
-                </a>
-            </div>
-            <div class="col-6">
-                <a href="{{ route('create.index') }}" style="text-decoration:none; color: black;">
-                    <i>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="blue" class="bi bi-file-earmark-plus" viewBox="0 0 16 16">
-                            <path d="M8 6.5a.5.5 0 0 1 .5.5v1.5H10a.5.5 0 0 1 0 1H8.5V11a.5.5 0 0 1-1 0V9.5H6a.5.5 0 0 1 0-1h1.5V7a.5.5 0 0 1 .5-.5z"/>
-                            <path d="M14 4.5V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h5.5L14 4.5zm-3 0A1.5 1.5 0 0 1 9.5 3V1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V4.5h-2z"/>
-                        </svg>
-                    </i>
-                    <b>New</b>
-                </a>
+                        Filter
+                    </div>
+                    <div class="col-8">
+                        <input class="form-control mr-sm-2" name="search" id="search" type="search" placeholder="City">
+                    </div>
+                    <div class="col-2" style="text-align: left;" onclick="getStalls()">
+                        <i>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="green" class="bi bi-search" viewBox="0 0 16 16">
+                                <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+                            </svg>                        
+                        </i>
+                        Find
+                    </div>
+                </div>
+                <hr style="border-top: dotted 1px;">
+            @endif
+            
+            <div class="row" style="text-align: center;">
+                <div class="col-4" style="border-right: 1px dotted black">
+                    <a href="{{ route('home') }}" style="text-decoration:none; color: black;">
+                        <i>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="green" class="bi bi-house" viewBox="0 0 16 16">
+                                <path d="M8.707 1.5a1 1 0 0 0-1.414 0L.646 8.146a.5.5 0 0 0 .708.708L2 8.207V13.5A1.5 1.5 0 0 0 3.5 15h9a1.5 1.5 0 0 0 1.5-1.5V8.207l.646.647a.5.5 0 0 0 .708-.708L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293L8.707 1.5ZM13 7.207V13.5a.5.5 0 0 1-.5.5h-9a.5.5 0 0 1-.5-.5V7.207l5-5 5 5Z"/>
+                            </svg>
+                        </i>
+                        <b>Home</b>
+                    </a>
+                </div>
+                <div class="col-4" style="border-right: 1px dotted black">
+                    <a href="{{ route('map.index') }}" style="text-decoration:none; color: black;">
+                        <i>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-geo-alt" viewBox="0 0 16 16">
+                                <path d="M12.166 8.94c-.524 1.062-1.234 2.12-1.96 3.07A31.493 31.493 0 0 1 8 14.58a31.481 31.481 0 0 1-2.206-2.57c-.726-.95-1.436-2.008-1.96-3.07C3.304 7.867 3 6.862 3 6a5 5 0 0 1 10 0c0 .862-.305 1.867-.834 2.94zM8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10z"/>
+                                <path d="M8 8a2 2 0 1 1 0-4 2 2 0 0 1 0 4zm0 1a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
+                            </svg>
+                        </i>
+                        <b>Map</b>
+                    </a>
+                </div>
+                <div class="col-4">
+                    <a href="{{ route('create.index') }}" style="text-decoration:none; color: black;">
+                        <i>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="blue" class="bi bi-file-earmark-plus" viewBox="0 0 16 16">
+                                <path d="M8 6.5a.5.5 0 0 1 .5.5v1.5H10a.5.5 0 0 1 0 1H8.5V11a.5.5 0 0 1-1 0V9.5H6a.5.5 0 0 1 0-1h1.5V7a.5.5 0 0 1 .5-.5z"/>
+                                <path d="M14 4.5V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h5.5L14 4.5zm-3 0A1.5 1.5 0 0 1 9.5 3V1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V4.5h-2z"/>
+                            </svg>
+                        </i>
+                        <b>New</b>
+                    </a>
+                </div>
             </div>
         </div>
-    </div>
-</footer>
+    </footer>
+@endif
 
 <div class="modal fade" id="filter" tabindex="-1" role="dialog" aria-labelledby="filterTitle" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">

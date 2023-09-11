@@ -1,41 +1,13 @@
-<!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-        <meta content="Cari Burger" name="description" />
-        <meta content="fzlxtech" name="author" />
-        <title>Cari Burger</title>
-        <meta name="csrf-token" content="{{ csrf_token() }}">
-        <link rel="shortcut icon" href="{{ asset('img/icon.png') }}">
-        <style>
-            body {
-                padding: 0;
-                margin: 0;
-            }
-            html, body, #map {
-                height: 100%;
-                width: 100vw;
-            }
+@extends('layouts.master')
 
-        </style>
-        @yield('css')
-        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="crossorigin=""/>
-        <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-        <!-- Fonts -->
-        <link rel="preconnect" href="https://fonts.bunny.net">
-        <link href="https://fonts.bunny.net/css?family=figtree:400,600&display=swap" rel="stylesheet" />
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
-
-        @vite(['resources/sass/app.scss', 'resources/js/app.js'])
-    </head>
-    <body>
-        <div class="container">
-            <div class="row align-items-center" style="background: rgba(255,255,255,0.7); padding-top:10px; background-image:url({{asset('img/glitter.gif')}})" >
-                <div class="col-3"></div>
-                <div class="col-6">
-                    <h1 style="text-align: center; font-weight: bold">Cari Burger</h1>
-                </div>
+@section('content')
+    <div class="container">
+        <div class="row align-items-center" style="background: rgba(255,255,255,0.7); padding-top:10px; background-image:url({{asset('img/glitter.gif')}})" >
+            <div class="col-3"></div>
+            <div class="col-6">
+                <h1 style="text-align: center; font-weight: bold">Cari Burger</h1>
+            </div>
+            @if(request()->get('from'))
                 <div class="col-3" style="text-align: right" onclick="confirmCancel()">
                     <h1>
                         <i>
@@ -45,29 +17,35 @@
                         </i>
                     </h1>
                 </div>
+            @endif
+        </div>
+    </div>
+    <div id="map"></div>
+    
+    @if(request()->get('from'))
+        <footer class="footer fixed-bottom mt-auto py-3" style="background: rgba(255,255,255,1);">
+            <div class="container">
+                <form action="#" method="post" id="formMap">
+                    @csrf
+                    <div class="row">
+                        <div class="col-4">
+                            <input type="text" class="form-control" name="lat" id="lat" placeholder="Latitude" readonly>
+                        </div>
+                        <div class="col-4">
+                            <input type="text" class="form-control" name="lng" id="lng" placeholder="Longitude" readonly>
+                            <input type="hidden" name="from" id="from" value="{{ request()->get('from')}}">
+                        </div>
+                        <div class="col-4">
+                            <a class="btn btn-success" href="#" style="width: 100%;" onclick="submitForm()">Submit</a>
+                        </div>
+                    </div>
+                </form>
             </div>
-        </div>
-        <div id="map"></div>
-    </body>
-    <footer class="footer fixed-bottom mt-auto py-3" style="background: rgba(255,255,255,1);">
-        <div class="container">
-            <form action="#" method="post" id="formMap">
-                @csrf
-                <div class="row">
-                    <div class="col-4">
-                        <input type="text" class="form-control" name="lat" id="lat" placeholder="Latitude" readonly>
-                    </div>
-                    <div class="col-4">
-                        <input type="text" class="form-control" name="lng" id="lng" placeholder="Longitude" readonly>
-                        <input type="hidden" name="from" id="from" value="{{ request()->get('from')}}">
-                    </div>
-                    <div class="col-4">
-                        <a class="btn btn-success" href="#" style="width: 100%;" onclick="submitForm()">Submit</a>
-                    </div>
-                </div>
-            </form>
-        </div>
-    </footer>
+        </footer>
+    @endif
+@endsection
+
+@section('script')
     <script>
         $( document ).ready(function() {
             
@@ -80,16 +58,49 @@
 
             map.locate({setView: true, maxZoom: 16});
 
-
+            var myIcon = L.icon({
+                iconUrl: '{{ asset("img/icon.png") }}',
+                iconSize: [50, 50],
+            });
+            
             function onLocationFound(e) {
                 var radius = e.accuracy;
 
-                L.marker(e.latlng).addTo(map).bindPopup("You are within " + radius + " meters from this point").openPopup();
+                L.marker(e.latlng).addTo(map);
 
                 L.circle(e.latlng, radius).addTo(map);
+
+                getStalls('secret');
+            }
+
+            function getStalls(data) {
+                var url = '{{ route("home.getstalls", [":slug", ":slug2"]) }}';
+                url = url.replace(':slug', data);
+                url = url.replace(':slug2', 'city');
+                $.ajax({
+                    type:'get',
+                    url: url,
+                    success:function(data) {
+                        data.data.forEach(e => {
+                            var marker = L.marker([e.lat, e.lng], {icon: myIcon}).addTo(map).bindTooltip(e.name + ' @ ' + e.city, { permanent: true, direction: 'bottom'}).on('click', function(c) {
+                                openWaze(e)
+                            });
+                        });
+                    }
+                });
             }
 
             map.on('locationfound', onLocationFound);
+
+            function openWaze(e) {
+                if (e.waze_url) {
+                    if (confirm('Waze to ' + e.name + ' @ ' + e.city + '?')) {
+                        window.open(e.waze_url);
+                    } else {
+                        return; 
+                    }
+                }
+            }
 
             function onLocationError(e) {
                 alert(e.message);
@@ -97,26 +108,38 @@
 
             map.on('locationerror', onLocationError);
 
-            var myIcon = L.icon({
-                iconUrl: '{{ asset("img/icon.png") }}',
-                iconSize: [50, 50],
-            });
-
             let marker_arr = [];
             function onMapClick(e) {
-                if (marker_arr.length > 0) map.removeLayer(marker_arr[0]); marker_arr.pop();
-                var marker = L.marker([e.latlng.lat, e.latlng.lng], {icon: myIcon}).addTo(map);
-                // .on('click', function(e) {
-                //     // console.log(e.latlng.lat, e.latlng.lng)
-                // });
-                marker_arr.push(marker);
+                var check_url = '{{request()->get('from')}}';
+                if (check_url) {
+                    if (marker_arr.length > 0) map.removeLayer(marker_arr[0]); marker_arr.pop();
+                    var marker = L.marker([e.latlng.lat, e.latlng.lng], {icon: myIcon}).addTo(map);
+                    
+                    marker_arr.push(marker);
 
-                $('#lat').val(e.latlng.lat);
-                $('#lng').val(e.latlng.lng);
+                    $('#lat').val(e.latlng.lat);
+                    $('#lng').val(e.latlng.lng);
+                }
             }
 
             map.on('click', onMapClick);
         });
+
+        var getUrlParameter = function getUrlParameter(sParam) {
+            var sPageURL = window.location.search.substring(1),
+                sURLVariables = sPageURL.split('&'),
+                sParameterName,
+                i;
+        
+            for (i = 0; i < sURLVariables.length; i++) {
+                sParameterName = sURLVariables[i].split('=');
+        
+                if (sParameterName[0] === sParam) {
+                    return sParameterName[1] === undefined ? true : decodeURIComponent(sParameterName[1]);
+                }
+            }
+            return false;
+        };
 
         function submitForm ()
         {
@@ -125,12 +148,11 @@
 
             if (!lat || !lng) return;
 
-            const queryString = window.location.search;
-            const urlParams = new URLSearchParams(queryString);
+            const modalid = getUrlParameter('modalid');
             var return_to_url;
-            let params = urlParams.get('from')
-            if (urlParams.get('modalid')) {
-                return_to_url = params + '/?latlng=' + lat + ',' + lng + '&modalid=' + urlParams.get('modalid');
+            let params = getUrlParameter('from');
+            if (modalid) {
+                return_to_url = params + '/?latlng=' + lat + ',' + lng + '&modalid=' + modalid;
             } else {
                 return_to_url = params + '/?latlng=' + lat + ',' + lng;
             }
@@ -141,12 +163,12 @@
             if (confirm('Are you sure to cancel?')) {
                 var lat = 0;
                 var lng = 0;
-                const queryString = window.location.search;
-                const urlParams = new URLSearchParams(queryString);
+
+                const modalid = getUrlParameter('modalid');
                 var return_to_url;
-                let params = urlParams.get('from')
-                if (urlParams.get('modalid')) {
-                    return_to_url = params + '/?latlng=' + lat + ',' + lng + '&modalid=' + urlParams.get('modalid');
+                let params = getUrlParameter('from');
+                if (modalid) {
+                    return_to_url = params + '/?latlng=' + lat + ',' + lng + '&modalid=' + modalid;
                 } else {
                     return_to_url = params + '/?latlng=' + lat + ',' + lng;
                 }
@@ -156,4 +178,4 @@
             }
         }
     </script>
-</html>
+@endsection
