@@ -1,3 +1,60 @@
+<style>
+    .range {
+        position: relative;
+    }
+
+    input[type="range"] {
+        -webkit-appearance: none;
+        display: block;
+        margin: 0;
+        width: 100%;
+        background: transparent;
+    }
+
+    input[type="range"]:focus {
+        outline: none;
+    }
+
+    input[type="range"]::-webkit-slider-runnable-track {
+        -webkit-appearance: none;
+        width: 100%;
+        color: transparent;
+        background: lightgray;
+        border-radius: 999px;
+        border: none;
+        box-shadow: 0px 0px 0px rgba(0, 0, 0, 0), 0px 0px 0px rgba(13, 13, 13, 0);
+        background: rgba(70, 134, 146, 0.5);
+        border: 0px solid rgba(0, 0, 0, 0);
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        cursor: pointer;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background: black;
+        box-shadow: 0px 2px 10px -2px black(1);
+        position: relative;
+        z-index: 2;
+        box-shadow: 1.1px 1.1px 6.8px rgba(0, 0, 0, 0), 0px 0px 1.1px rgba(13, 13, 13, 0);
+        border: 0px solid #000000;
+        background: url("{{asset('img/icon.png')}}")  #75b4c3;
+        background-size: 100%;
+        background-position: center;
+        background-repeat: no-repeat;
+    }
+
+    input[type="range"]::-webkit-slider-thumb::before {
+        content: '+';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        color: red;
+    }
+</style>
+
 @if(!request()->get('from'))
     <footer class="footer fixed-bottom mt-auto py-3" style="background: rgba(255,255,255,1);">
         <div class="container">
