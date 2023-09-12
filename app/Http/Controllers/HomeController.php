@@ -34,6 +34,7 @@ class HomeController extends Controller
         return response()->json([
             'data' => count($new) > 0 ? $new : $stalls->toArray(),
             'location' => count($new) > 0 ? 1 : 0,
+            'found' => count($new) > 0 ? 1 : 0,
             'success' => true
         ], 200);
     }

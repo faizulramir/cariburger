@@ -2,6 +2,12 @@
     <footer class="footer fixed-bottom mt-auto py-3" style="background: rgba(255,255,255,1);">
         <div class="container">
             @if (Route::currentRouteName() == 'home')
+                <div class="row">
+                    <div class="col-12">
+                        <label for="rangeStalls" class="form-label"><span id="rangeValue">5 KM away from happiness</span></label>
+                        <input type="range" class="form-range" id="rangeStalls" min="5" max="100" value="5">
+                    </div>
+                </div>
                 <div class="row align-items-center">
                     <div class="col-2" style="text-align: center;" onclick="openFilter()">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-three-dots" viewBox="0 0 16 16">
@@ -99,6 +105,12 @@
 @include('scripts.getEditModal')
 @include('scripts.openWazeModal')
 <script>
+
+    $(document).on('input', '#rangeStalls', function() {
+        $('#rangeValue').text($('#rangeStalls').val() + ' KM away from happiness');
+        manageData($('#rangeStalls').val());
+    });
+
     function openFilter() {
         $('#filter').modal('show');
     }
@@ -145,9 +157,9 @@
                 url: url,
                 success:function(data) {
                     let arr_data = data.data;
-                    if (data.data.length > 0) {
+                    if (data.data.length > 0 && data.found) {
                         for (let index = 0; index < arr_data.length; index++) {
-                            let m_bot = index == (arr_data.length - 1)  ? '150' : '10';
+                            let m_bot = index == (arr_data.length - 1)  ? '200' : '10';
                             const box = document.createElement('div');
                             box.classList.add('card');
                             box.style.marginBottom = `${m_bot}px`;
