@@ -31,8 +31,10 @@ class HomeController extends Controller
             return $a->name <=> $b->name;
         });
 
+        $stalls = $stalls ? $stalls : [];
+        
         return response()->json([
-            'data' => count($new) > 0 ? $new : $stalls->toArray(),
+            'data' => count($new) > 0 ? $new : $stalls,
             'location' => count($new) > 0 ? 1 : 0,
             'found' => count($new) > 0 ? 1 : 0,
             'success' => true

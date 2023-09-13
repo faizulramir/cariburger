@@ -1,11 +1,11 @@
 @extends('layouts.master')
 
 @section('content')
-    <div class="container">
+    <div class="container" style="padding-bottom: 100px;">
         <div class="row" style="background: rgba(255,255,255,0.7); padding-top:10px; background-image:url({{asset('img/glitter.gif')}})" >
             <h1 style="text-align: center; font-weight: bold">Cari Burger</h1>
         </div>
-        <div class="card" style="margin-bottom: 100px;">
+        <div class="card" >
             <div class="card-body">
                 <h5 class="card-title"><b>Add Shop</b></h5>
                 <form action="#" method="POST" id="createStallForm">

@@ -60,10 +60,13 @@
         <div class="container">
             @if (Route::currentRouteName() == 'home')
                 <div class="row">
-                    <div class="col-12">
-                        <label for="rangeStalls" class="form-label"><span id="rangeValue">5 KM away from happiness</span></label>
-                        <input type="range" class="form-range" id="rangeStalls" min="5" max="100" value="5">
+                    <div class="col-1"></div>
+                    <div class="col-10">
+                        <label for="rangeStalls" class="form-label"><span id="rangeValue">1 KM away from happiness</span></label>
+                        <input type="range" class="form-range" id="rangeStalls" min="1" max="100" value="1">
                     </div>
+                    <div class="col-1"></div>
+
                 </div>
                 <div class="row align-items-center">
                     <div class="col-2" style="text-align: center;" onclick="openFilter()">

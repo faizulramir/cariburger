@@ -34,7 +34,7 @@
                 url: url,
                 success:function(data) {
                     mapData = data
-                    manageData(5)
+                    manageData(1)
                     
                 }
             });
@@ -45,6 +45,19 @@
             const wrapper = document.getElementById("wrapper");
             wrapper.innerHTML = '';
             let arrDistance = [];
+
+            arr_data.sort((a, b) => {
+                let fa = a.name.toLowerCase(),
+                    fb = b.name.toLowerCase();
+
+                if (fa < fb) {
+                    return -1;
+                }
+                if (fa > fb) {
+                    return 1;
+                }
+                return 0;
+            });
             
             if (arr_data.length > 0) {
                 for (let index = 0; index < arr_data.length; index++) {
