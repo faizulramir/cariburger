@@ -84,10 +84,14 @@
                     success:function(data) {
                         data.data.forEach(e => {
                             // bindTooltip(e.name + ' @ ' + e.city, { permanent: true, direction: 'bottom'}).
-                            let marker =  L.marker([e.lat, e.lng], {icon: myIcon}).addTo(map).on('click', function(c) {
+                            if (e.lat && e.lng) {
+                                let marker =  L.marker([e.lat, e.lng], {icon: myIcon}).addTo(map).on('click', function(c) {
                                     openWaze(e, marker)
-                                });
-                            markerData.push(marker)
+                                });  
+                                markerData.push(marker)
+                            }
+                            
+                            
                         });
                     }
                 });
