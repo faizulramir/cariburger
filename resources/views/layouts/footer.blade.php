@@ -167,7 +167,7 @@
 <script>
 
     $(document).on('input', '#rangeStalls', function() {
-        $('#rangeValue').text($('#rangeStalls').val() + ' KM away from happiness');
+        $('#rangeValue').text($('#rangeStalls').val() + ' KM away from happiness (' + cntAvailStalls + ' found!)');
         manageData($('#rangeStalls').val());
     });
 

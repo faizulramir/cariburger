@@ -82,6 +82,7 @@
             processData : false,
             success:function(data) {
                 $('#modalEditStall').modal('hide');
+                localStorage.clear();
                 alert('Success!');
                 window.location.href = '{{url()->current()}}' + '/?city=' + city;
             }
