@@ -161,9 +161,9 @@
 </div>
 
 @include('modals.editStall')
-@include('modals.openWaze')
+{{-- @include('modals.openWaze') --}}
 @include('scripts.getEditModal')
-@include('scripts.openWazeModal')
+{{-- @include('scripts.openWazeModal') --}}
 <script>
 
     $(document).on('input', '#rangeStalls', function() {

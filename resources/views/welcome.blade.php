@@ -34,8 +34,6 @@
 @endsection
 
 @section('script')
-    @include('scripts.getEditModal')
-    @include('scripts.openWazeModal')
     <script>
         let mapData;
         let latitude;

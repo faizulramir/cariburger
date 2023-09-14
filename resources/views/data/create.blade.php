@@ -151,7 +151,4 @@
             });
         }
     </script>
-    @include('scripts.openWazeModal')
-    
-    
 @endsection
