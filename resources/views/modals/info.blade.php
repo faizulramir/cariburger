@@ -8,7 +8,7 @@
                 <p>
                     This website is using public data, anyone can add or edit any data provided, please be responsible. <br> <br>
                     If you found some <span style="font-style: italic; font-weight: 900;">burger tepi jalan</span>, kindly insert their data in the <span style="font-weight: 900;">'+ New'</span> tab. Your kindness might help those who crave <span style="font-style: italic; font-weight: 900;">burger tepi jalan</span>. <br> <br>
-                    If any issue or improvement needed, kindly email me @ faizul.ramir@gmail.com or you can open an issue directly in my <a href="https://github.com/faizulramir/cariburger/issues/new" target="_blank">github</a>.
+                    If any issue or improvement needed, kindly email me @ faizul@fzlxtech.my or you can open an issue directly in my <a href="https://github.com/faizulramir/cariburger/issues/new" target="_blank">github</a>.
                 </p>
 
                 <div class="row">
