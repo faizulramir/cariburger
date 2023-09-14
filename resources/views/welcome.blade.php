@@ -28,6 +28,8 @@
         @include('modals.info')
         @include('modals.openWaze')
         @include('modals.spinner')
+        @include('modals.reviewSubmit')
+        @include('modals.review')
     </div>
 @endsection
 
@@ -39,6 +41,8 @@
         let latitude;
         let longitude;
         let cntAvailStalls = 0;
+        let reviewData;
+        let reviewChunks;
         function openInfo () {
             $('#info').modal('show');
         }
@@ -86,9 +90,9 @@
 
             if (arr_data.length > 0) {
                 for (let index = 0; index < arr_data.length; index++) {
-                    let m_bot = index == (arr_data.length - 1)  ? '200' : '10';
                     const box = document.createElement('div');
                     box.classList.add('card');
+                    let m_bot = '10';
                     box.style.marginBottom = `${m_bot}px`;
                     let checkDistance = distance(latitude, longitude, arr_data[index].lat, arr_data[index].lng, "K") <= range;
                     arrDistance.push({
@@ -119,18 +123,27 @@
                                         ${if_waze}
                                     </div>
                                 </div>
+                                <br>
                                 <div class="row">
-                                    <div class="col-6">
-                                        <span style="font-size: 10px; color: blue;" onclick="editStall('${arr_data[index].id}')">Edit Stall</span>
+                                    <div class="col-4">
+                                        <span style="font-size: 10px;" class="btn btn-info" onclick="editStall('${arr_data[index].id}')">Edit Stall</span>
                                     </div>
-                                    <div class="col-6" style="text-align: right;">
+                                    <div class="col-4" style="text-align: center;">
                                         <span style="font-size: 8px; color: grey;">Created by ${arr_data[index].creator_name ? arr_data[index].creator_name : 'Anonymous'}</span>
+                                    </div>
+                                    <div class="col-4" style="text-align: right;">
+                                        <span style="font-size: 10px;" class="btn btn-success" onclick="reviewStall('${arr_data[index].id}')">Review Stall</span>
                                     </div>
                                 </div>
                             </div>
                         `;
                         wrapper.appendChild(box);
                     }
+                }
+
+                let setLastBox = $("#wrapper").find('.card');
+                if (setLastBox.length > 0)  {
+                    setLastBox[setLastBox.length - 1].style.marginBottom = `200px`;
                 }
 
                 if (allAreTrue(arrDistance) == undefined) {
@@ -169,6 +182,132 @@
 
             $('#spinner').modal('hide');
         }
+
+        
+        function reviewStall(index) {
+            let stallData = mapData.data.find(e => e.id == index);
+            $('#reviewTitle').text(stallData.name + ' @ ' + stallData.city);
+            const wrapperReviewBtn = document.getElementById("wrapperReviewBtn");
+            wrapperReviewBtn.innerHTML = '';
+            const boxReviewBtn = document.createElement('span');
+            boxReviewBtn.innerHTML = `
+                <span class="btn btn-success" onclick=reviewSubmit(${index})>Review</div>
+            `;
+            wrapperReviewBtn.appendChild(boxReviewBtn);
+
+            reviewData = stallData.review;
+            if (reviewData) {
+                getPaginateReview(1)
+            } else {
+                $('#reviewIndex').empty();
+                $('#pagReview').empty();
+                const wrapperReview = document.getElementById("wrapperReview");
+                wrapperReview.innerHTML = '';
+                const boxReview = document.createElement('div');
+                boxReview.innerHTML = `
+                    <div class="row">
+                        <div class="col-6">
+                            No review yet
+                        </div>
+                    </div>
+                `;
+                wrapperReview.appendChild(boxReview);
+            }
+            $('#review').modal('show');
+        }
+
+        function getPaginateReview (index) {
+            const arr = JSON.parse(reviewData);
+            const chunkSize = 2;
+            reviewChunks = []
+
+            for (let i = 0; i < arr.length; i += chunkSize) {
+                const chunk = arr.slice(i, i + chunkSize);
+                reviewChunks.push(chunk);
+            }
+
+            $('#reviewIndex').empty();
+            $('#pagReview').empty();
+
+            $('#reviewIndex').append(`Page ${index} of ${reviewChunks.length}`)
+
+            let prev = index - 1 !== 0 ? `
+                <li class="page-item"><a class="page-link" onclick="getPaginateReview(${index - 1})" href="javascript:void(0)">Previous</a></li>
+            ` :  ` <li class="page-item"><a class="page-link disabled"  href="#">Previous</a></li> `;
+
+            let next = index + 1 <= reviewChunks.length ? `
+            <li class="page-item"><a class="page-link" onclick="getPaginateReview(${index + 1})" href="javascript:void(0)">Next</a></li>
+            ` :  `<li class="page-item"><a class="page-link disabled"  href="#">Next</a></li>`;
+
+            $('#pagReview').append(`
+                ${prev}
+                ${next}
+            `)
+            
+            const wrapperReview = document.getElementById("wrapperReview");
+            wrapperReview.innerHTML = '';
+            reviewChunks[index - 1].forEach(r => {
+                const boxReview = document.createElement('div');
+                boxReview.classList.add('card');
+                boxReview.style.marginBottom = `10px`;
+                let objectDate = new Date(parseInt(r.r_ts));
+                let day = objectDate.getDate();
+                let month = objectDate.getMonth();
+                let year = objectDate.getFullYear();
+                let format2 = r.r_ts ? day + "/" + month + "/" + year : '';
+                boxReview.innerHTML = `
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-6">
+                                <i class="fa fa-user-circle-o" aria-hidden="true" style="color: blue;">
+                                    &ensp;${r.r_name}
+                                </i>
+                            </div>
+                            <div class="col-6" style="text-align:right">
+                                <i class="fa fa-cutlery" aria-hidden="true">
+                                    &ensp;${r.r_item}
+                                </i>
+                            </div>
+                        </div>
+                        <br>
+                        <div class="row">
+                            <div class="col-12">
+                               "${r.r_review}"
+                            </div>
+                        </div>
+                        <br>
+                        <div class="row">
+                            <div class="col-12" style="text-align:right">
+                               ${format2}
+                            </div>
+                        </div>
+                    </div>
+                `;
+                wrapperReview.appendChild(boxReview); 
+            });
+        }
+
+        function reviewSubmit(index) {
+            $('#review').modal('hide');
+            let stallData = mapData.data.find(e => e.id == index);
+            $('#reviewSubmitTitle').text(stallData.name + ' @ ' + stallData.city);
+            $('#r_return').val(index);
+            $('#id').val(stallData.id);
+            $('#reviewSubmit').modal({
+                backdrop: 'static',
+                keyboard: false
+            })
+            $('#reviewSubmit').modal('show');
+        }
+
+        $("#cancelReviewSubmit").on("click", function() {
+            if (confirm('Unsaved data will be reset, continue?')) {
+                $('#reviewSubmit').modal('hide');
+                reviewStall($("#r_return").val())
+            } else {
+                return;
+            }
+        });
 
         function allAreTrue(arr) {
             return arr.find(element => element.status === true);

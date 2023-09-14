@@ -63,9 +63,26 @@ class HomeController extends Controller
     public function editStall(Request $request)
     {
         Cache::flush();
-
         $stall = Stall::find($request->id);
-        $stall->fill($request->all())->save();
+        if (isset($request->r_name)) {
+            if ($stall->review) {
+                $reviews = json_decode($stall->review);
+                array_push($reviews,  (object)[
+                    'r_name' => $request->r_name,
+                    'id' => $request->id,
+                    'r_item' => $request->r_item,
+                    'r_review' => $request->r_review,
+                    'r_ts' => $request->r_ts
+                ]);
+                $stall->review = json_encode($reviews);
+            } else {
+                $stall->review = json_encode([$request->all()]);
+            }
+            $stall->save();
+        } else {
+            $stall = Stall::find($request->id);
+            $stall->fill($request->all())->save();
+        }
 
         Cache::rememberForever('stalls', function () {
             return DB::table('stalls')->get();
