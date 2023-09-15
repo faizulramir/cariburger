@@ -93,10 +93,11 @@
                                 markerData.push(marker)
                             }
                         });
+                        map.addLayer(markers);
                     }
                 });
             }
-            map.addLayer(markers);
+
             map.on('locationfound', onLocationFound);
 
             function openWaze(e, marker) {
