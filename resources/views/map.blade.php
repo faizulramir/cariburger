@@ -50,6 +50,7 @@
         $( document ).ready(function() {
             
             var map = L.map('map', { zoomControl: false }).fitWorld();
+            var markers = L.markerClusterGroup();
 
             L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 maxZoom: 19,
@@ -87,16 +88,15 @@
                             if (e.lat && e.lng) {
                                 let marker =  L.marker([e.lat, e.lng], {icon: myIcon}).addTo(map).on('click', function(c) {
                                     openWaze(e, marker)
-                                });  
+                                });
+                                markers.addLayer(marker)  
                                 markerData.push(marker)
                             }
-                            
-                            
                         });
                     }
                 });
             }
-
+            map.addLayer(markers);
             map.on('locationfound', onLocationFound);
 
             function openWaze(e, marker) {
