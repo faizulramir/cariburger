@@ -323,6 +323,10 @@
             }
         });
 
+        $("#closeReview").on("click", function() {
+            $('#review').modal('hide');
+        });
+
         function allAreTrue(arr) {
             return arr.find(element => element.status === true);
         }
