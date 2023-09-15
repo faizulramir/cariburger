@@ -46,7 +46,23 @@
         }
 
         function getData(data) {
+            $('#spinner').modal({backdrop: 'static', keyboard: false})  
+            $('#spinner').modal('show');
+            var hours = 8;
+            var now = new Date().getTime();
+            var setupTime = localStorage.getItem('setupTime');
+            if (setupTime == null) {
+                localStorage.clear()
+                localStorage.setItem('setupTime', now)
+            } else {
+                if(now-setupTime > hours*60*1000) {
+                    localStorage.clear()
+                    localStorage.setItem('setupTime', now);
+                }
+            }
+
             let checkMapData = JSON.parse(localStorage.getItem("mapData"));
+            
             if (!checkMapData)  {
                 var url = '{{ route("home.getstalls", [":slug", ":slug2"]) }}';
                 url = url.replace(':slug', data);
@@ -270,7 +286,7 @@
                         <br>
                         <div class="row">
                             <div class="col-12">
-                               "${r.r_review}"
+                               "${r.r_review ? r.r_review : '&#128077;'}"
                             </div>
                         </div>
                         <br>
@@ -339,8 +355,6 @@
         };
         
         $( document ).ready(function() {
-            $('#spinner').modal({backdrop: 'static', keyboard: false})  
-            $('#spinner').modal('show');
             navigator.geolocation.getCurrentPosition(successCallback, errorCallback);
         });
         

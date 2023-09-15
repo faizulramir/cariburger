@@ -63,7 +63,7 @@
                     <div class="col-1"></div>
                     <div class="col-10">
                         <label for="rangeStalls" class="form-label"><span id="rangeValue">1 KM away from happiness</span></label>
-                        <input type="range" class="form-range" id="rangeStalls" min="1" max="100" value="1">
+                        <input type="range" class="form-range" id="rangeStalls" min="1" max="30" value="1">
                     </div>
                     <div class="col-1"></div>
 

@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Stall;
 use Cache;
 use DB;
+use Exception;
+use File;
 use Illuminate\Http\Request;
 
 class DataController extends Controller
@@ -17,6 +19,26 @@ class DataController extends Controller
         //     return DB::table('stalls')->get();
         // });
 
+        // $path = public_path() . "/newData.json"; // ie: /var/www/laravel/app/storage/json/filename.json
+        // if (!File::exists($path)) {
+        //     throw new Exception("Invalid File");
+        // }
+
+        // $file = File::get($path); // string
+        // $newData = json_decode($file);
+        // foreach ($newData as $key => $data) {
+        //     $d_data = json_decode($data);
+        //     $stall = new Stall;
+        //     foreach ($d_data as $k => $d) {
+        //         if ($k == 'review') {
+        //             $stall->{$k} = json_encode($d);
+        //         } else {
+        //             $stall->{$k} = $d;
+        //         }
+        //     }
+        //     $stall->save();
+        // }
+        
         return view('data.create');
     }
 
