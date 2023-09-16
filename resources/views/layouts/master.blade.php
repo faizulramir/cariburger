@@ -3,10 +3,10 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta content="Cari Burger" name="description" />
+        <meta name="csrf-token" content="{{ csrf_token() }}">
+        <meta content="CariBurger in your area. Built by burger lover." name="description" />
         <meta content="fzlxtech" name="author" />
         <title>Cari Burger</title>
-        <meta name="csrf-token" content="{{ csrf_token() }}">
         <link rel="shortcut icon" type="image/png" href="{{ asset('img/icon.png') }}">
         @yield('css')
         <!-- Fonts -->
