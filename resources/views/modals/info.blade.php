@@ -6,16 +6,17 @@
             </div>
             <div class="modal-body">
                 <p>
-                    This website is using public data, anyone can add or edit any data provided, please be responsible. <br> <br>
+                    CariBurger in your area. Built for your tummy.
+                    {{-- This website is using public data, anyone can add or edit any data provided, please be responsible. <br> <br>
                     If you found some <span style="font-style: italic; font-weight: 900;">burger tepi jalan</span>, kindly insert their data in the <span style="font-weight: 900;">'+ New'</span> tab. Your kindness might help those who crave <span style="font-style: italic; font-weight: 900;">burger tepi jalan</span>. <br> <br>
-                    If any issue or improvement needed, kindly email me @ faizul@fzlxtech.my or you can open an issue directly in my <a href="https://github.com/faizulramir/cariburger/issues/new" target="_blank">github</a>.
+                    If any issue or improvement needed, kindly email me @ faizul@fzlxtech.my or you can open an issue directly in my <a href="https://github.com/faizulramir/cariburger/issues/new" target="_blank">github</a>. --}}
                 </p>
 
                 <div class="row">
-                    <div class="col-6">
+                    {{-- <div class="col-6">
                         - Faizul
-                    </div>
-                    <div class="col-6" style="text-align: right">
+                    </div> --}}
+                    <div class="col-12" style="text-align: right">
                         <a href="https://github.com/faizulramir/cariburger" target="_blank">
                             <i>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-github" viewBox="0 0 16 16">

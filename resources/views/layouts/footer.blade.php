@@ -91,18 +91,18 @@
             @endif
             
             <div class="row" style="text-align: center;">
-                <div class="col-4" style="border-right: 1px dotted black">
-                    <a href="{{ route('home') }}" style="text-decoration:none; color: black;">
+                <div class="col-4" style="border-right: 1px dotted black" id="btnHome">
+                    {{-- <a href="{{ route('home') }}" style="text-decoration:none; color: black;"> --}}
                         <i>
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="green" class="bi bi-house" viewBox="0 0 16 16">
                                 <path d="M8.707 1.5a1 1 0 0 0-1.414 0L.646 8.146a.5.5 0 0 0 .708.708L2 8.207V13.5A1.5 1.5 0 0 0 3.5 15h9a1.5 1.5 0 0 0 1.5-1.5V8.207l.646.647a.5.5 0 0 0 .708-.708L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293L8.707 1.5ZM13 7.207V13.5a.5.5 0 0 1-.5.5h-9a.5.5 0 0 1-.5-.5V7.207l5-5 5 5Z"/>
                             </svg>
                         </i>
                         <b>Home</b>
-                    </a>
+                    {{-- </a> --}}
                 </div>
-                <div class="col-4" style="border-right: 1px dotted black">
-                    <a href="{{ route('map.index') }}" style="text-decoration:none; color: black;">
+                <div class="col-4" style="border-right: 1px dotted black" id="btnMap">
+                    {{-- <a href="{{ route('map.index') }}" style="text-decoration:none; color: black;"> --}}
                         <i>
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-geo-alt" viewBox="0 0 16 16">
                                 <path d="M12.166 8.94c-.524 1.062-1.234 2.12-1.96 3.07A31.493 31.493 0 0 1 8 14.58a31.481 31.481 0 0 1-2.206-2.57c-.726-.95-1.436-2.008-1.96-3.07C3.304 7.867 3 6.862 3 6a5 5 0 0 1 10 0c0 .862-.305 1.867-.834 2.94zM8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10z"/>
@@ -110,10 +110,10 @@
                             </svg>
                         </i>
                         <b>Map</b>
-                    </a>
+                    {{-- </a> --}}
                 </div>
-                <div class="col-4">
-                    <a href="{{ route('create.index') }}" style="text-decoration:none; color: black;">
+                <div class="col-4" id="btnAdd">
+                    {{-- <a href="{{ route('create.index') }}" style="text-decoration:none; color: black;"> --}}
                         <i>
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="blue" class="bi bi-file-earmark-plus" viewBox="0 0 16 16">
                                 <path d="M8 6.5a.5.5 0 0 1 .5.5v1.5H10a.5.5 0 0 1 0 1H8.5V11a.5.5 0 0 1-1 0V9.5H6a.5.5 0 0 1 0-1h1.5V7a.5.5 0 0 1 .5-.5z"/>
@@ -121,7 +121,7 @@
                             </svg>
                         </i>
                         <b>New</b>
-                    </a>
+                    {{-- </a> --}}
                 </div>
             </div>
         </div>
@@ -172,6 +172,18 @@
     function openFilter() {
         $('#filter').modal('show');
     }
+
+    $("#btnHome").on("click", function() {
+        window.location = "{{route('home')}}"
+    })
+
+    $("#btnMap").on("click", function() {
+        window.location = "{{route('map.index')}}"
+    })
+
+    $("#btnAdd").on("click", function() {
+        window.location = "{{route('create.index')}}"
+    })
     
     $(".form-check-input").on("change", function() {
         let placeholder = $('.form-check-input:checked').val();
