@@ -26,7 +26,6 @@
 
         @include('modals.editStall')
         @include('modals.info')
-        @include('modals.openWaze')
         @include('modals.spinner')
         @include('modals.reviewSubmit')
         @include('modals.review')

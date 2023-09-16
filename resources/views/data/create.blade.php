@@ -69,7 +69,6 @@
             </div>
         </div>
     </div>
-    @include('modals.openWaze')
 @endsection
 
 @section('script')

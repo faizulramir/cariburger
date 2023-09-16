@@ -7,7 +7,7 @@
         <meta content="CariBurger in your area. Built by burger lover." name="description" />
         <meta content="fzlxtech" name="author" />
         <title>Cari Burger</title>
-        <link rel="shortcut icon" type="image/png" href="{{ asset('img/icon.png') }}">
+        <link rel="icon" type="image/png" href="{{ asset('favicon.png') }}">
         @yield('css')
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
