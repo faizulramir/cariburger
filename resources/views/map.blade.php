@@ -76,31 +76,58 @@
             
             var markerData = [];
             function getStalls(data) {
-                var url = '{{ route("home.getstalls", [":slug", ":slug2"]) }}';
-                url = url.replace(':slug', data);
-                url = url.replace(':slug2', 'city');
-                $.ajax({
-                    type:'get',
-                    url: url,
-                    success:function(data) {
-                        data.data.forEach(e => {
-                            // bindTooltip(e.name + ' @ ' + e.city, { permanent: true, direction: 'bottom'}).
-                            if (e.lat && e.lng) {
-                                let marker =  L.marker([e.lat, e.lng], {icon: myIcon}).addTo(map).on('click', function(c) {
-                                    openWaze(e, marker)
-                                });
-                                markers.addLayer(marker)  
-                                markerData.push(marker)
-                            }
+                var hours = 1;
+                var now = new Date().getTime();
+                var setupTime = localStorage.getItem('setupTime');
+                if (setupTime == null) {
+                    localStorage.clear()
+                    localStorage.setItem('setupTime', now)
+                } else {
+                    if(now-setupTime > hours*60*60*1000) {
+                        localStorage.clear()
+                        localStorage.setItem('setupTime', now);
+                    }
+                }
+
+                let checkMapData = JSON.parse(localStorage.getItem("mapData"));
+                
+                if (!checkMapData)  {
+                    var url = '{{ route("home.getstalls", [":slug", ":slug2"]) }}';
+                    url = url.replace(':slug', data);
+                    url = url.replace(':slug2', 'city');
+                    $.ajax({
+                        type:'get',
+                        url: url,
+                        success:function(data) {
+                            processMap(data)
+                        }
+                    });
+                } else {
+                    mapData = checkMapData;
+                    processMap(mapData)
+                }
+            }
+
+            function processMap(data) {
+                data.data.forEach(e => {
+                    // bindTooltip(e.name + ' @ ' + e.city, { permanent: true, direction: 'bottom'}).
+                    if (e.lat && e.lng) {
+                        let marker =  L.marker([e.lat, e.lng], {icon: myIcon}).on('click', function(c) {
+                            openWaze(e, marker)
                         });
-                        map.addLayer(markers);
+                        markers.addLayer(marker)  
+                        markerData.push(marker)
                     }
                 });
+                map.addLayer(markers);
             }
 
             map.on('locationfound', onLocationFound);
 
             function openWaze(e, marker) {
+                markerData.forEach(m => {
+                    m.unbindTooltip();
+                });
                 let if_waze = e.waze_url ? `
                                 <a href="${e.waze_url}" target="_blank" style="text-decoration: none" onclick="return confirm('Waze to ${e.name} @ ${e.city}?')">
                                     <i>

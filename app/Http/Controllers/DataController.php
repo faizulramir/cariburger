@@ -13,12 +13,7 @@ class DataController extends Controller
 {
     public function index () 
     {
-        // Cache::flush();
-
-        // Cache::rememberForever('stalls', function () {
-        //     return DB::table('stalls')->get();
-        // });
-
+    
         // $path = public_path() . "/newData.json"; // ie: /var/www/laravel/app/storage/json/filename.json
         // if (!File::exists($path)) {
         //     throw new Exception("Invalid File");
@@ -38,6 +33,22 @@ class DataController extends Controller
         //     }
         //     $stall->save();
         // }
+
+        // $stalls = Cache::get('stalls');
+        // $duplicates = $stalls->duplicates('lat');
+
+        // foreach ($duplicates as $key => $d) {
+        //     if ($d) {
+        //         $stall = Stall::find($stalls[$key]->id);
+        //         $stall->delete();
+        //     }
+        // }
+
+        // Cache::flush();
+
+        // Cache::rememberForever('stalls', function () {
+        //     return DB::table('stalls')->get();
+        // });
         
         return view('data.create');
     }
