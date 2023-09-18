@@ -47,6 +47,13 @@
 
 @section('script')
     <script>
+        let ifMobile
+        if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)){
+        // true for mobile device
+            ifMobile = true
+        }else{
+            ifMobile = false
+        }
         mapboxgl.accessToken = 'pk.eyJ1IjoiZmFpenVscmFtaXIiLCJhIjoiY2xoZWwzazhhMW1ybzNxcWZyZG96b3F6ayJ9.8kVVm-96UEexgPIV7xEUew';
         var map = new mapboxgl.Map({
           container: 'map',
@@ -144,8 +151,7 @@
                     }
                 });
             } else {
-                mapData = checkMapData;
-                processMap(mapData)
+                processMap(checkMapData)
             }
         }
 
@@ -358,7 +364,7 @@
                 filter: ['!', ['has', 'point_count']],
                 layout: {
                     'icon-image': 'custom-marker',
-                    'icon-size': 0.5
+                    'icon-size': ifMobile ? 0.5 : 1
                 }
             });
             
