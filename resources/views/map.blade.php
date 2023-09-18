@@ -47,152 +47,190 @@
 
 @section('script')
     <script>
-        $( document ).ready(function() {
-            
-            var map = L.map('map', { zoomControl: false }).fitWorld();
-            var markers = L.markerClusterGroup();
-
-            L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                maxZoom: 19,
-                attribution: '© OpenStreetMap'
-            }).addTo(map);
-
-            map.locate({setView: true, maxZoom: 16});
-
-            var myIcon = L.icon({
-                iconUrl: '{{ asset("img/icon.png") }}',
-                iconSize: [50, 50],
-            });
-            
-            function onLocationFound(e) {
-                var radius = e.accuracy;
-
-                L.marker(e.latlng).addTo(map);
-
-                L.circle(e.latlng, radius).addTo(map);
-
-                getStalls('secret');
-            }
-            
-            var markerData = [];
-            function getStalls(data) {
-                var hours = 1;
-                var now = new Date().getTime();
-                var setupTime = localStorage.getItem('setupTime');
-                if (setupTime == null) {
-                    localStorage.clear()
-                    localStorage.setItem('setupTime', now)
-                } else {
-                    if(now-setupTime > hours*60*60*1000) {
-                        localStorage.clear()
-                        localStorage.setItem('setupTime', now);
-                    }
-                }
-
-                let checkMapData = JSON.parse(localStorage.getItem("mapData"));
-                
-                if (!checkMapData)  {
-                    var url = '{{ route("home.getstalls", [":slug", ":slug2"]) }}';
-                    url = url.replace(':slug', data);
-                    url = url.replace(':slug2', 'city');
-                    $.ajax({
-                        type:'get',
-                        url: url,
-                        success:function(data) {
-                            processMap(data)
-                        }
-                    });
-                } else {
-                    mapData = checkMapData;
-                    processMap(mapData)
-                }
-            }
-
-            function processMap(data) {
-                data.data.forEach(e => {
-                    // bindTooltip(e.name + ' @ ' + e.city, { permanent: true, direction: 'bottom'}).
-                    if (e.lat && e.lng) {
-                        let marker =  L.marker([e.lat, e.lng], {icon: myIcon}).on('click', function(c) {
-                            openWaze(e, marker)
-                        });
-                        markers.addLayer(marker)  
-                        markerData.push(marker)
-                    }
-                });
-                map.addLayer(markers);
-            }
-
-            map.on('locationfound', onLocationFound);
-
-            function openWaze(e, marker) {
-                markerData.forEach(m => {
-                    m.unbindTooltip();
-                });
-                let if_waze = e.waze_url ? `
-                                <a href="${e.waze_url}" target="_blank" style="text-decoration: none" onclick="return confirm('Waze to ${e.name} @ ${e.city}?')">
-                                    <i>
-                                        <svg fill="#000000" width="50px" height="50px" viewBox="0 0 24 24" id="waze" data-name="Flat Line" xmlns="http://www.w3.org/2000/svg" class="icon flat-line">
-                                            <path id="secondary" d="M13.38,3C8.25,3,6,6.57,6,10.49v.11a2.4,2.4,0,0,1-2.37,2.47A2.27,2.27,0,0,1,3,13a7,7,0,0,0,3.66,4.53h0A2,2,0,0,1,10,18.69h0a17.29,17.29,0,0,0,3.33.3l.62,0,.09,0a2,2,0,0,1,3.47-1.27l.13-.05A8.08,8.08,0,0,0,21,11C21,6.51,18,3,13.38,3Z" style="fill: rgb(44, 169, 188); stroke-width: 2;"></path><path id="primary" d="M6.66,17.52A7,7,0,0,1,3,13a2.27,2.27,0,0,0,.63.08A2.4,2.4,0,0,0,6,10.6v-.11C6,6.57,8.25,3,13.38,3,18,3,21,6.51,21,11a8.08,8.08,0,0,1-3.39,6.62" style="fill: none; stroke: rgb(0, 0, 0); stroke-linecap: round; stroke-linejoin: round; stroke-width: 2;"></path><path id="primary-2" data-name="primary" d="M10,18.69a17.29,17.29,0,0,0,3.33.3l.62,0" style="fill: none; stroke: rgb(0, 0, 0); stroke-linecap: round; stroke-linejoin: round; stroke-width: 2;"></path><path id="primary-3" data-name="primary" d="M18,19a2,2,0,1,1-2-2A2,2,0,0,1,18,19ZM6,19a2,2,0,1,0,2-2A2,2,0,0,0,6,19Z" style="fill: none; stroke: rgb(0, 0, 0); stroke-linecap: round; stroke-linejoin: round; stroke-width: 2;"></path>
-                                            <line id="primary-upstroke" x1="15.95" y1="9" x2="16.05" y2="9" style="fill: none; stroke: rgb(0, 0, 0); stroke-linecap: round; stroke-linejoin: round; stroke-width: 2.5;"></line><line id="primary-upstroke-2" data-name="primary-upstroke" x1="11.05" y1="9" x2="10.95" y2="9" style="fill: none; stroke: rgb(0, 0, 0); stroke-linecap: round; stroke-linejoin: round; stroke-width: 2.5;"></line>
-                                        </svg>
-                                    </i>
-                                    Waze
-                                </a>
-                            `  : `<p style="color: red;">Location Undefined</p>`;
-                let ttData = 
-                `<div class="row">
-                    <div class="col-12" style="text-align: center;  border-bottom: 1px black dotted;">
-                        <span><b>${e.name} @ ${e.city}</b></span>
-                    </div>
-                    <div class="col-12">
-                        <span>Operation Day: ${e.operation_day == null ? '?' : e.operation_day} <br> Operation Time: ${e.operation_time == null ? '?' : e.operation_time}</span>
-                    </div>
-                    ${if_waze}
-                </div>`;
-                marker.bindTooltip(ttData, { permanent: true, direction: 'bottom', interactive: true,})
-                map.flyTo([e.lat, e.lng], 19);
-                
-                // setTimeout(function() {
-                //     if (e.waze_url) {
-                //         if (confirm('Waze to ' + e.name + ' @ ' + e.city + '?')) {
-                //             window.open(e.waze_url);
-                //         } else {
-                //             return; 
-                //         }
-                //     }
-                // }, 3500);
-            }
-
-            map.on('zoomend', function() {
-                if (map.getZoom() < 19) {
-                        markerData.forEach(e => {
-                            e.unbindTooltip();
-                        });
-                    }
-            });
-
-            function onLocationError(e) {
-                alert(e.message);
-            }
-
-            map.on('locationerror', onLocationError);
-
-            let marker_arr = [];
-            function onMapClick(e) {
-                var check_url = '{{request()->get('from')}}';
-                if (check_url) {
-                    if (marker_arr.length > 0) map.removeLayer(marker_arr[0]); marker_arr.pop();
-                    var marker = L.marker([e.latlng.lat, e.latlng.lng], {icon: myIcon}).addTo(map);
-                    
-                    marker_arr.push(marker);
-
-                    $('#lat').val(e.latlng.lat);
-                    $('#lng').val(e.latlng.lng);
-                }
-            }
-
-            map.on('click', onMapClick);
+        mapboxgl.accessToken = 'pk.eyJ1IjoiZmFpenVscmFtaXIiLCJhIjoiY2xoZWwzazhhMW1ybzNxcWZyZG96b3F6ayJ9.8kVVm-96UEexgPIV7xEUew';
+        var map = new mapboxgl.Map({
+          container: 'map',
         });
+
+        let pos;
+
+        const popup = new mapboxgl.Popup({
+            closeButton: false,
+            closeOnClick: false
+        });
+
+        function initLayer(data) {
+            var layer;
+            var layerList = document.getElementById('layerList');
+            var layers_ = [];
+            const geolocation = new mapboxgl.Marker()
+                .setLngLat([parseFloat(pos.coords.longitude), parseFloat(pos.coords.latitude)])
+                .addTo(map);
+                
+            data['layers'].forEach(function(el) {
+                if (el["source-layer"]) {
+                    if (el.layout) {
+                        layers_.push({
+                            id: el.id,
+                            source: 'openmaptiles',
+                            'source-layer': el['source-layer'],
+                            interactive: true,
+                            type: el.type,
+                            paint: el.paint ? el.paint : {},
+                            layout: el.layout
+                        });
+                    } else {
+                        layers_.push({
+                            id: el.id,
+                            source: 'openmaptiles',
+                            'source-layer': el['source-layer'],
+                            interactive: true,
+                            type: el.type,
+                            paint: el.paint ? el.paint : {},
+                        });
+                    }
+                }
+            });
+
+            map.setStyle({
+                version: 8,
+                center: [parseFloat(pos.coords.longitude), parseFloat(pos.coords.latitude)],
+                zoom: 10,
+                sources: {
+                'openmaptiles': {
+                    type: 'vector',
+                    tiles: [
+                        'https://fzlxtech.my/tileserver/a/asia/{z}/{x}/{y}.pbf',
+                        'https://fzlxtech.my/tileserver/b/asia/{z}/{x}/{y}.pbf',
+                        'https://fzlxtech.my/tileserver/c/asia/{z}/{x}/{y}.pbf',
+                        'https://fzlxtech.my/tileserver/d/asia/{z}/{x}/{y}.pbf',
+                    ],
+                    minzoom: 2,
+                    maxzoom: 14
+                }
+                },
+                layers: layers_,
+                glyphs: data.glyphs
+            });
+            getStalls('secret')
+        }
+
+        var markerData = [];
+        function getStalls(data) {
+            var hours = 1;
+            var now = new Date().getTime();
+            var setupTime = localStorage.getItem('setupTime');
+            if (setupTime == null) {
+                localStorage.clear()
+                localStorage.setItem('setupTime', now)
+            } else {
+                if(now-setupTime > hours*60*60*1000) {
+                    localStorage.clear()
+                    localStorage.setItem('setupTime', now);
+                }
+            }
+
+            let checkMapData = JSON.parse(localStorage.getItem("mapData"));
+            
+            if (!checkMapData)  {
+                var url = '{{ route("home.getstalls", [":slug", ":slug2"]) }}';
+                url = url.replace(':slug', data);
+                url = url.replace(':slug2', 'city');
+                $.ajax({
+                    type:'get',
+                    url: url,
+                    success:function(data) {
+                        processMap(data)
+                    }
+                });
+            } else {
+                mapData = checkMapData;
+                processMap(mapData)
+            }
+        }
+
+        let points;
+        function processMap(data) {
+            points = [];
+            data.data.forEach(e => {
+                if (e.lat && e.lng) {
+                    let point = {
+                            type: "Feature",
+                            properties: {
+                                id: e.id,
+                                data: e
+                            },
+                            geometry: {
+                                type: "Point",
+                                coordinates: [parseFloat(e.lng), parseFloat(e.lat), 0.0]
+                            }
+                    }
+                    points.push(point)
+                }
+            });
+        }
+
+        function openWaze(prop, coordinates) {
+            let e = JSON.parse(prop.data);
+            let ttData = ''
+            let if_waze = ''
+            let waze_confirm = 'Waze to ' + e.name + '@' + e.city + '?';
+            var b = waze_confirm.replace(/'/g, '/');
+            let waze_url = 'https://waze.com/ul?ll=';
+            if_waze = e.lat && e.lng ? `
+                            <a href="${waze_url + e.lat + ',' + e.lng + '&z=10'}" target="_blank" style="text-decoration: none" onclick="return confirm('${b}')">
+                                <i>
+                                    <svg fill="#000000" width="50px" height="50px" viewBox="0 0 24 24" id="waze" data-name="Flat Line" xmlns="http://www.w3.org/2000/svg" class="icon flat-line">
+                                        <path id="secondary" d="M13.38,3C8.25,3,6,6.57,6,10.49v.11a2.4,2.4,0,0,1-2.37,2.47A2.27,2.27,0,0,1,3,13a7,7,0,0,0,3.66,4.53h0A2,2,0,0,1,10,18.69h0a17.29,17.29,0,0,0,3.33.3l.62,0,.09,0a2,2,0,0,1,3.47-1.27l.13-.05A8.08,8.08,0,0,0,21,11C21,6.51,18,3,13.38,3Z" style="fill: rgb(44, 169, 188); stroke-width: 2;"></path><path id="primary" d="M6.66,17.52A7,7,0,0,1,3,13a2.27,2.27,0,0,0,.63.08A2.4,2.4,0,0,0,6,10.6v-.11C6,6.57,8.25,3,13.38,3,18,3,21,6.51,21,11a8.08,8.08,0,0,1-3.39,6.62" style="fill: none; stroke: rgb(0, 0, 0); stroke-linecap: round; stroke-linejoin: round; stroke-width: 2;"></path><path id="primary-2" data-name="primary" d="M10,18.69a17.29,17.29,0,0,0,3.33.3l.62,0" style="fill: none; stroke: rgb(0, 0, 0); stroke-linecap: round; stroke-linejoin: round; stroke-width: 2;"></path><path id="primary-3" data-name="primary" d="M18,19a2,2,0,1,1-2-2A2,2,0,0,1,18,19ZM6,19a2,2,0,1,0,2-2A2,2,0,0,0,6,19Z" style="fill: none; stroke: rgb(0, 0, 0); stroke-linecap: round; stroke-linejoin: round; stroke-width: 2;"></path>
+                                        <line id="primary-upstroke" x1="15.95" y1="9" x2="16.05" y2="9" style="fill: none; stroke: rgb(0, 0, 0); stroke-linecap: round; stroke-linejoin: round; stroke-width: 2.5;"></line><line id="primary-upstroke-2" data-name="primary-upstroke" x1="11.05" y1="9" x2="10.95" y2="9" style="fill: none; stroke: rgb(0, 0, 0); stroke-linecap: round; stroke-linejoin: round; stroke-width: 2.5;"></line>
+                                    </svg>
+                                </i>
+                                Waze
+                            </a>
+                        `  : `<p style="color: red;">Location Undefined</p>`;
+            ttData = 
+            `<div class="row">
+                <div class="col-12" style="text-align: center;  border-bottom: 1px black dotted;">
+                    <span><b>${e.name} @ ${e.city}</b></span>
+                </div>
+                <div class="col-12">
+                    <span>Operation Day: ${e.operation_day == null ? '?' : e.operation_day} <br> Operation Time: ${e.operation_time == null ? '?' : e.operation_time}</span>
+                </div>
+                ${if_waze}
+            </div>`;
+
+            map.easeTo({center: coordinates, zoom: 16});
+            popup.setLngLat(coordinates).setHTML(ttData).addTo(map);
+        }
+
+        map.on('zoomend', function() {
+            if (map.getZoom() < 16) {
+                popup.remove();
+            }
+        });
+
+        map.on('click', onMapClick);
+
+        let marker_arr = [];
+        function onMapClick(e) {
+            var check_url = '{{request()->get('from')}}';
+            if (check_url) {
+                if (marker_arr.length > 0) marker_arr[0].remove(); marker_arr.pop();
+                const el = document.createElement('div');
+                el.className = 'markers';
+                el.style.backgroundImage = "url('{{ asset("img/icon100x100.png") }}')"
+                el.style.backgroundSize = "cover"
+                el.style.width = '50px'
+                el.style.height = '50px'
+    
+                var marker = new mapboxgl.Marker(el).setLngLat([e.lngLat.lng, e.lngLat.lat]).addTo(map);
+                
+                marker_arr.push(marker);
+
+                $('#lat').val(e.lngLat.lat);
+                $('#lng').val(e.lngLat.lng);
+            }
+        }
 
         var getUrlParameter = function getUrlParameter(sParam) {
             var sPageURL = window.location.search.substring(1),
@@ -246,5 +284,142 @@
                return; 
             }
         }
+
+        map.on('load', () => {
+            let stallGJson = {
+                type: "FeatureCollection",
+                crs: {
+                    "type":"name",
+                    "properties":{
+                        "name":"stalls"
+                    },
+                },
+                features: points,
+            };
+
+            map.addSource('stalls', {
+                type: 'geojson',
+                data: stallGJson,
+                cluster: true,
+                clusterMaxZoom: 14,
+                clusterRadius: 50
+            })
+
+            map.addLayer({
+                id: 'clusters',
+                type: 'circle',
+                source: 'stalls',
+                filter: ['has', 'point_count'],
+                paint: {
+                    'circle-color': [
+                        'step',
+                        ['get', 'point_count'],
+                        '#51bbd6',
+                        100,
+                        '#f1f075',
+                        750,
+                        '#f28cb1'
+                    ],
+                    'circle-radius': [
+                        'step',
+                        ['get', 'point_count'],
+                        20,
+                        100,
+                        30,
+                        750,
+                        40
+                    ]
+                }
+            });
+
+            map.loadImage(
+                '{{ asset("img/icon.png") }}',
+                (error, image) => {
+                    if (error) throw error;
+                    map.addImage('custom-marker', image);
+            });
+            
+            map.addLayer({
+                id: 'cluster-count',
+                type: 'symbol',
+                source: 'stalls',
+                filter: ['has', 'point_count'],
+                layout: {
+                    'text-field': ['get', 'point_count_abbreviated'],
+                    'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
+                    'text-size': 12
+                }
+            });
+            
+            map.addLayer({
+                id: 'unclustered-point',
+                type: 'symbol',
+                source: 'stalls',
+                filter: ['!', ['has', 'point_count']],
+                layout: {
+                    'icon-image': 'custom-marker',
+                    'icon-size': 0.5
+                }
+            });
+            
+            // inspect a cluster on click
+            map.on('click', 'clusters', (e) => {
+                const features = map.queryRenderedFeatures(e.point, {
+                    layers: ['clusters']
+                });
+                const clusterId = features[0].properties.cluster_id;
+                map.getSource('stalls').getClusterExpansionZoom(
+                    clusterId,
+                    (err, zoom) => {
+                        if (err) return;
+                        map.easeTo({
+                            center: features[0].geometry.coordinates,
+                            zoom: zoom
+                        });
+                    }
+                );
+            });
+            
+            map.on('click', 'unclustered-point', (e) => {
+                const prop = e.features[0].properties;
+                const coordinates = e.features[0].geometry.coordinates.slice();
+
+                while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+                    coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+                }
+
+                openWaze(prop, coordinates)
+            });
+            
+            map.on('mouseenter', 'clusters', () => {
+                map.getCanvas().style.cursor = 'pointer';
+            });
+
+            map.on('mouseleave', 'clusters', () => {
+                map.getCanvas().style.cursor = '';
+            });
+        });
+
+        var tileJSON = {!! File::get(public_path().'/style.json') !!}
+
+        const successCallback = (position) => {
+            pos = position
+            initLayer(tileJSON);
+        };
+
+        const errorCallback = (error) => {
+            pos = {
+                coords: {
+                    longitude: 101.6841,
+                    latitude: 3.1319
+                }
+            }
+            initLayer(tileJSON);
+        };
+        
+        $( document ).ready(function() {
+            navigator.geolocation.getCurrentPosition(successCallback, errorCallback);
+        });
+        
     </script>
 @endsection
