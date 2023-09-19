@@ -48,17 +48,24 @@
 @section('script')
     <script>
         let ifMobile
-        if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)){
+        if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)){
         // true for mobile device
             ifMobile = true
-        }else{
+        } else {
             ifMobile = false
         }
+        
         mapboxgl.accessToken = 'pk.eyJ1IjoiZmFpenVscmFtaXIiLCJhIjoiY2xoZWwzazhhMW1ybzNxcWZyZG96b3F6ayJ9.8kVVm-96UEexgPIV7xEUew';
-        var map = new mapboxgl.Map({
-          container: 'map',
-        });
-
+        try {
+            var map = new mapboxgl.Map({
+              container: 'map',
+            });
+        }
+        catch(err) {
+          alert('Whoops! Please enable hardware acceleration!')
+          
+          window.location.href = "{{ route('home') }}";
+        }
         let pos;
 
         const popup = new mapboxgl.Popup({
