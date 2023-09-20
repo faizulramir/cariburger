@@ -1,5 +1,10 @@
 @extends('layouts.master')
 
+@section('css')
+    <style>
+        #recenter {position:absolute;top:50%;right:5px;overflow:auto;}
+    </style>
+@endsection
 @section('content')
     <div class="container">
         <div class="row align-items-center" style="background: rgba(255,255,255,0.7); padding-top:10px; background-image:url({{asset('img/glitter.gif')}})" >
@@ -21,6 +26,13 @@
         </div>
     </div>
     <div id="map"></div>
+    <div id="recenter">
+        <button type="button" class="btn btn-secondary"  onclick="recenter()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-cursor" viewBox="0 0 16 20">
+                <path d="M14.082 2.182a.5.5 0 0 1 .103.557L8.528 15.467a.5.5 0 0 1-.917-.007L5.57 10.694.803 8.652a.5.5 0 0 1-.006-.916l12.728-5.657a.5.5 0 0 1 .556.103zM2.25 8.184l3.897 1.67a.5.5 0 0 1 .262.263l1.67 3.897L12.743 3.52 2.25 8.184z"></path>
+            </svg>
+        </button>
+    </div>
     
     @if(request()->get('from'))
         <footer class="footer fixed-bottom mt-auto py-3" style="background: rgba(255,255,255,1);">
@@ -72,6 +84,16 @@
             closeButton: false,
             closeOnClick: false
         });
+
+        function recenter() {
+            let coordinates = [parseFloat(pos.coords.longitude), parseFloat(pos.coords.latitude)];
+
+            while (Math.abs(parseFloat(pos.coords.longitude) - coordinates[0]) > 180) {
+                coordinates[0] += parseFloat(pos.coords.longitude) > coordinates[0] ? 360 : -360;
+            }
+
+            map.easeTo({center: coordinates, zoom: 10});
+        }
 
         function initLayer(data) {
             var layer;
