@@ -67,7 +67,7 @@
             ifMobile = false
         }
         
-        mapboxgl.accessToken = 'pk.eyJ1IjoiZmFpenVscmFtaXIiLCJhIjoiY2xoZWwzazhhMW1ybzNxcWZyZG96b3F6ayJ9.8kVVm-96UEexgPIV7xEUew';
+        mapboxgl.accessToken = 'faizul';
         try {
             var map = new mapboxgl.Map({
               container: 'map',
